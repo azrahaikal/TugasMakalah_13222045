@@ -1,13 +1,12 @@
 # Ini adalah program untuk mendeteksi jenis penulisan komentar
-# 1. Snake case: hello_world (dipisahkan oleh '_')                              ---> 000
-# 2. Kebab case: hello-world (dipisahkan oleh '-')                              ---> 001
-# 3. Camel case: helloWorld                                                     ---> 010
-# 4. Pascal case: HelloWorld                                                    ---> 011
-# referensi: https://www.freecodecamp.org/news/snake-case-vs-camel-case-vs-pascal-case-vs-kebab-case-whats-the-difference/
-# 5. lebih dari 1 kata dan semua huruf non-kapital                              ---> 100
-# 6. lebih dari 1 kata, lalu hanya huruf pertama di kata pertama yang kapital   ---> 101
-# 7. hanya 1 kata dan huruf pertamanya kapital                                  ---> 110
-# 8. hanya 1 kata dan huruf pertamanya non-kapital                              ---> 111
+# 1. Snake case: hello_world (dipisahkan oleh '_')                               ---> 000
+# 2. Kebab case: hello-world (dipisahkan oleh '-')                               ---> 001
+# 3. Camel case: helloWorld                                                      ---> 010
+# 4. Pascal case: HelloWorld                                                     ---> 011
+# 5. 2 kata dan semua huruf non-kapital                                          ---> 100
+# 6. 2 kata, lalu hanya huruf pertama di kata pertama yang kapital               ---> 101
+# 7. 1 kata dan huruf pertamanya kapital                                         ---> 110
+# 8. 1 kata dan huruf pertamanya non-kapital                                     ---> 111
 # asumsikan komentar ditulis dengan spasi
 
 text = "hello world"
