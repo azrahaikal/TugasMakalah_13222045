@@ -1,15 +1,15 @@
 # Ini adalah program untuk mendeteksi jenis penulisan komentar
 # 1. Snake case: hello_world (dipisahkan oleh '_')                               ---> 000
 # 2. Kebab case: hello-world (dipisahkan oleh '-')                               ---> 001
-# 3. Camel case: helloWorld                                                      ---> 010
-# 4. Pascal case: HelloWorld                                                     ---> 011
-# 5. 2 kata dan semua huruf non-kapital                                          ---> 100
-# 6. 2 kata, lalu hanya huruf pertama di kata pertama yang kapital               ---> 101
-# 7. 1 kata dan huruf pertamanya kapital                                         ---> 110
-# 8. 1 kata dan huruf pertamanya non-kapital                                     ---> 111
+# 3. Camel case: hello World                                                     ---> 010
+# 4. Pascal case: Hello World                                                    ---> 011
+# 5. 2 kata dan semua huruf non-kapital: hello world                             ---> 100
+# 6. 2 kata, lalu hanya huruf pertama di kata pertama yang kapital: Hello world  ---> 101
+# 7. 1 kata dan huruf pertamanya kapital: Hello                                  ---> 110
+# 8. 1 kata dan huruf pertamanya non-kapital: hello                              ---> 111
 # asumsikan komentar ditulis dengan spasi
 
-text = "hello world"
+text = "Hello World"
 textSplitted = text.split()
 for word in textSplitted:
     if('_' in text):
