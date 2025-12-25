@@ -1,2 +1,3 @@
 print("Line 1")	 		 
-print("Line 2") 			 
+# Ini Komentar	 
+print("Line 2")

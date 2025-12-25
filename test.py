@@ -1,31 +1,40 @@
 # spasi --> 0
 # \t (tab) --> 1
 
-def encode_whitespace(source_code, binary_message, bits_per_line):
-    # bits_per_line untuk menentukan jumlah bit pesan yang disisipkan di 1 baris
+from ubahJenisKomentar import ubah_komentar
+
+def encode_full_stego(source_code, binary_message, bits_per_line):
     lines = source_code.splitlines()
     encoded_lines = []
-    
     bit_index = 0
     message_len = len(binary_message)
-    
-    # iterasi baris kode yang ada
+
     for line in lines:
+        current_line = line
+        
+        # 1. Cek apakah baris adalah komentar
+        if line.strip().startswith("#") and bit_index < message_len:
+            # Ambil 3 bit untuk gaya komentar
+            comment_bits = binary_message[bit_index : bit_index + 3]
+            # Update isi baris dengan gaya komentar baru
+            current_line = ubah_komentar(line, comment_bits)
+            bit_index += len(comment_bits)
+        
+        # 2. Sisipkan bit melalui Whitespace (Space/Tab)
         if bit_index < message_len:
             bit_chunk = binary_message[bit_index : bit_index + bits_per_line]
             suffix = "".join([" " if b == "0" else "\t" for b in bit_chunk])
-            encoded_lines.append(line + suffix)
-            bit_index += bits_per_line
+            encoded_lines.append(current_line + suffix)
+            bit_index += len(bit_chunk)
         else:
-            encoded_lines.append(line)
-            
-    # jika pesan ada, tetapi baris source code sudah habis
+            encoded_lines.append(current_line)
+
+    # 3. Handle sisa pesan jika baris kode habis (Overflow)
     while bit_index < message_len:
         bit_chunk = binary_message[bit_index : bit_index + bits_per_line]
-        # buat baris baru di paling bawah
-        empty_line_binary = "".join([" " if b == "0" else "\t" for b in bit_chunk])
-        encoded_lines.append(empty_line_binary)
-        bit_index += bits_per_line
+        suffix = "".join([" " if b == "0" else "\t" for b in bit_chunk])
+        encoded_lines.append(suffix)
+        bit_index += len(bit_chunk)
 
     # tulis ke .txt
     with open("output.txt", "w", encoding="utf-8") as f:
@@ -52,13 +61,14 @@ def decode_whitespace(stego_code):
 
 # tes dengan 2 baris
 original_code = """print("Line 1")
+# ini komentar
 print("Line 2")"""
 
 secret_bin = "1011001110" 
 n = 5 
 
 # encode
-stego_code = encode_whitespace(original_code, secret_bin, bits_per_line=n)
+stego_code = encode_full_stego(original_code, secret_bin, bits_per_line=n)
 
 # decode
 extracted_bin = decode_whitespace(stego_code)
