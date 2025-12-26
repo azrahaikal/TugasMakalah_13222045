@@ -1,55 +1,65 @@
-# ubahJenisKomentar.py
+# ini adalah program untuk mengubah gaya penulisan komentar berdasarkan input biner tertentu
 
 def transformasi_blok(w1, w2, biner_3_bit):
-    """Mengubah gaya satu pasangan kata berdasarkan 3 bit."""
-    if biner_3_bit == "000":    # Snake_case
-        return f"{w1.lower()}_{w2.lower()}"
-    elif biner_3_bit == "001":  # Kebab-case
-        return f"{w1.lower()}-{w2.lower()}"
-    elif biner_3_bit == "010":  # camel Case
-        return f"{w1.lower()} {w2.capitalize()}"
-    elif biner_3_bit == "011":  # Pascal Case
-        return f"{w1.capitalize()} {w2.capitalize()}"
-    elif biner_3_bit == "100":  # 2 kata kecil
-        return f"{w1.lower()} {w2.lower()}"
-    elif biner_3_bit == "101":  # 2 kata, kata pertama kapital
-        return f"{w1.capitalize()} {w2.lower()}"
-    elif biner_3_bit == "110":  # 1 kata kapital (kasus sisa)
-        return f"{w1.capitalize()}"
-    elif biner_3_bit == "111":  # 1 kata kecil (kasus sisa)
-        return f"{w1.lower()}"
-    return f"{w1} {w2}"
+    """Mengubah gaya pasangan kata."""
+    w2_clean = w2.replace("..", "")
+    
+    if biner_3_bit == "000":    return f"{w1.lower()}_{w2_clean.lower()}"
+    elif biner_3_bit == "001":  return f"{w1.lower()}-{w2_clean.lower()}"
+    elif biner_3_bit == "010":  return f"{w1.lower()} {w2_clean.capitalize()}"
+    elif biner_3_bit == "011":  return f"{w1.capitalize()} {w2_clean.capitalize()}"
+    elif biner_3_bit == "100":  return f"{w1.lower()} {w2_clean.lower()}"
+    elif biner_3_bit == "101":  return f"{w1.capitalize()} {w2_clean.lower()}"
+    elif biner_3_bit == "110":  return f"{w1.capitalize()} {w2_clean.capitalize()}.."
+    elif biner_3_bit == "111":  return f"{w1.lower()} {w2_clean.lower()}.."
+    return None
 
-def ubah_komentar_multi(komentar_asli, binary_message, bit_index):
-    """Memproses seluruh kata dalam baris komentar secara berpasangan."""
-    clean_comment = komentar_asli.replace('#', '').strip()
-    words = clean_comment.split()
+def ubah_komentar_multi(komentar_asli, binary_message, bit_index, marker="#"):
+    indent = komentar_asli[:len(komentar_asli) - len(komentar_asli.lstrip())]
+    content = komentar_asli.strip()
+    
+    if not content.startswith(marker):
+        return komentar_asli, bit_index
+        
+    clean_content = content[len(marker):].strip()
+    words = clean_content.split()
     
     if not words:
-        return "#", bit_index
+        return f"{indent}{marker}", bit_index
 
     result_words = []
     i = 0
     message_len = len(binary_message)
 
     while i < len(words):
-        # Jika masih ada minimal 3 bit biner tersedia
+        w1 = words[i]
+        
+        if not any(c.isalpha() for c in w1):
+            result_words.append(w1)
+            i += 1
+            continue
+
         if bit_index + 3 <= message_len:
-            chunk = binary_message[bit_index:bit_index+3]
-            w1 = words[i]
-            
-            if i + 1 < len(words):
+            consumed_w2 = False
+            if i + 1 < len(words) and any(c.isalpha() for c in words[i+1]):
                 w2 = words[i+1]
-                result_words.append(transformasi_blok(w1, w2, chunk))
-                i += 2
+                consumed_w2 = True
             else:
-                # Kasus jika hanya sisa 1 kata di baris tersebut
-                result_words.append(transformasi_blok(w1, w1 + "..", chunk))
+                w2 = w1 + ".." 
+                consumed_w2 = False
+            
+            chunk = binary_message[bit_index:bit_index+3]
+            transformed = transformasi_blok(w1, w2, chunk)
+            
+            if transformed:
+                result_words.append(transformed)
+                bit_index += 3
+                i += 2 if consumed_w2 else 1
+            else:
+                result_words.append(w1)
                 i += 1
-            bit_index += 3
         else:
-            # Jika biner habis, masukkan sisa kata asli
-            result_words.append(words[i])
+            result_words.append(w1)
             i += 1
             
-    return "# " + " ".join(result_words), bit_index
+    return f"{indent}{marker} " + " ".join(result_words), bit_index
