@@ -119,7 +119,6 @@ def main_decode():
             print("[Error] Header biner tidak valid.")
     else:
         print(f"[Error] Biner terlalu pendek.")
-    print("="*40 + "\n")
 
 if __name__ == "__main__":
     main_decode()
